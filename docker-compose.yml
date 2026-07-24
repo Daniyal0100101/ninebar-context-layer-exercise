@@ -1,0 +1,43 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ninebar-context-layer
+    volumes:
+      - ./data:/app/data
+      - ./outputs:/app/outputs
+    environment:
+      - PYTHONUNBUFFERED=1
+    command: python -m context_layer.demo
+
+  test:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ninebar-context-layer-test
+    volumes:
+      - ./src:/app/src
+      - ./tests:/app/tests
+      - ./data:/app/data
+    environment:
+      - PYTHONPATH=/app/src
+      - PYTHONUNBUFFERED=1
+    command: pytest tests/ -v --tb=short
+
+  dev:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ninebar-context-layer-dev
+    volumes:
+      - ./src:/app/src
+      - ./tests:/app/tests
+      - ./examples:/app/examples
+      - ./data:/app/data
+      - ./outputs:/app/outputs
+    environment:
+      - PYTHONUNBUFFERED=1
+    command: sleep infinity
